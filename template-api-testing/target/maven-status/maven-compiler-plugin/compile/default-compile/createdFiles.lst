@@ -1,0 +1,2 @@
+org\template\BaseEndpoint.class
+org\template\authentication\PostAuthenticateApiRequest.class
