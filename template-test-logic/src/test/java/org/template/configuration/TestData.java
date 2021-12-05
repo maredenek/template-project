@@ -11,20 +11,21 @@ import org.template.model.EnvironmentData;
 import org.template.model.User;
 
 import java.net.URL;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 
-import static io.vavr.Lazy.*;
 import static java.util.Objects.requireNonNull;
 
 public class TestData {
 
-    private final Lazy<List<User>> usersData = of(() -> getFileDataAsListOf(User.class, "usersData.json"));
-    private final Lazy<EnvironmentData> environmentData = of(() -> getFileDataAsListOf(EnvironmentData.class, "environmentData.json").get(0));
-    private final Consumer<User> setCookieSessionFetcher = user -> user.setSessionCookie(of(() -> fetchUserSessionCookie(user)));
+    private final Lazy<List<User>> usersData = Lazy.of(() -> getFileDataAsListOf(User.class, "usersData.json"));
+    private final Lazy<EnvironmentData> environmentData = Lazy.of(() -> getFileDataAsListOf(EnvironmentData.class, "environmentData.json").get(0));
+    private final Consumer<User> setCookieSessionFetcher = user -> user.setSessionCookie(Lazy.of(() -> fetchUserSessionCookie(user)));
 
     public List<User> getUsersData() {
         usersData.get().forEach(setCookieSessionFetcher);
@@ -60,7 +61,7 @@ public class TestData {
                 .filter(name -> name.startsWith("PrestaShop"))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
-        return new Cookie(cookieName, cookies.get(cookieName));
+        return new Cookie(cookieName, cookies.get(cookieName), "automationpractice.com", "/", Date.from(Instant.now().plusSeconds(3600)));
     }
 
 }
